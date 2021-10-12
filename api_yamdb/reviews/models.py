@@ -20,8 +20,8 @@ class Review(models.Model):
                                related_name="reviews")
 
     def __str__(self):
-        return (f'Author - <{self.author}>; title - <{self.title}>'
-                f'text part - <{self.text[:15]}>.')
+        return (f'Author - <{self.author}>; title_id - <{self.title}>'
+                f'review_id - <{self.id}> text part - <{self.text[:15]}>.')
 
     class Meta:
         constraints = [
@@ -36,8 +36,14 @@ class Comment(models.Model):
     pub_date = models.DateTimeField('Date of publication',
                                     auto_now_add=True,
                                     db_index=True)
+    author = models.ForeignKey(User, on_delete=models.CASCADE,
+                               related_name="comments")
     review = models.ForeignKey(
         Review, on_delete=models.CASCADE, related_name='comments')
 
     class Meta:
         ordering = ['-pub_date']
+
+    def __str__(self):
+        return (f'Author - <{self.author}>; review_id - <{self.review_id}>'
+                f'comment_id - <{self.id}> text_part - <{self.text[:15]}>.')
