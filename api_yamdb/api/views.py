@@ -1,8 +1,10 @@
 from rest_framework import viewsets, filters
 from api.serializers import (CategoriesSerializer,
                              GenresSerializer,
-                             TitlesSerializer)
-from reviews.models import Categories, Genres, Titles
+                             TitlesSerializer,
+                             CommentsSerializer,
+                             ReviewSerializer)
+from reviews.models import Categories, Genres, Titles, Comment, Review
 
 
 class CategoriesViewSet(viewsets.ModelViewSet):
@@ -26,3 +28,13 @@ class GenresViewSet(viewsets.ModelViewSet):
 class TitlesViewSet(viewsets.ModelViewSet):
     queryset = Titles.objects.all()
     serializer_class = TitlesSerializer
+
+
+class CommentViewSet(viewsets.ModelViewSet):
+    queryset = Comment.objects.all()
+    serializer_class = CommentsSerializer
+
+
+class ReviewViewSet(viewsets.ModelViewSet):
+    queryset = Review.objects.all()
+    serializer_class = ReviewSerializer
