@@ -22,7 +22,7 @@ class Titles(models.Model):
     rating = models.IntegerField(blank=True, null=True)
     description = models.TextField(blank=True)
     genry = models.ManyToManyField(Genres)
-    category = models.ForeignKey(Categories, on_delete=SET_NULL, null=True)
+    category = models.ForeignKey(Categories, on_delete=models.SET_NULL, null=True)
 
 
 class Review(models.Model):
