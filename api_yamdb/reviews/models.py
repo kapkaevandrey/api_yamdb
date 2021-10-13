@@ -18,7 +18,7 @@ class Category(models.Model):
     slug = models.SlugField(max_length=50, unique=True, validators=[validate_slug])
 
     def __str__(self):
-        return f"genre_id - <{self.id}, slug - <{self.slug}>"
+        return f"genre_id - <{self.id}>, slug - <{self.slug}>"
 
     class Meta:
         ordering = ("name",)
@@ -30,7 +30,7 @@ class Genre(models.Model):
     slug = models.SlugField(max_length=50, unique=True, validators=[validate_slug])
 
     def __str__(self):
-        return f"genre_id - <{self.id}, slug - <{self.slug}>"
+        return f"genre_id - <{self.id}>, slug - <{self.slug}>"
 
     class Meta:
         ordering = ("name",)
@@ -40,14 +40,14 @@ class Titles(models.Model):
     """Модель произведений."""
     name = models.CharField(max_length=50)
     year = models.PositiveSmallIntegerField(validators=[MaxValueValidator(CURRENT_YEAR + 1)])
-    rating = models.PositiveSmallIntegerField(default=0,
+    rating = models.PositiveSmallIntegerField(default=0, null=True,
                                               validators=[MaxValueValidator(10)])
-    description = models.TextField(blank=True)
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
+    description = models.TextField(blank=True, null=True)
     genre = models.ManyToManyField(Genre, through="GenreTitle", blank=True)
 
     def __str__(self):
-        return f"title_id - <{self.id}, name - <{self.name[:15]}>"
+        return f"title_id - <{self.id}>, name - <{self.name[:15]}>"
 
     class Meta:
         ordering = ['category__name']
