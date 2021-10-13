@@ -44,7 +44,7 @@ class Titles(models.Model):
                                               validators=[MaxValueValidator(10)])
     description = models.TextField(blank=True)
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
-    genre = models.ManyToManyField(Genre, through="GenreTitle", blank=True, null=True)
+    genre = models.ManyToManyField(Genre, through="GenreTitle", blank=True)
 
     def __str__(self):
         return f"title_id - <{self.id}, name - <{self.name[:15]}>"
