@@ -1,15 +1,33 @@
 from datetime import datetime
+import uuid
 
-from django.contrib.auth import get_user_model
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.core.validators import (MinValueValidator,
                                     MaxValueValidator,
-                                    validate_slug)
+                                    validate_slug,
+                                    validate_email)
 
 
 CURRENT_YEAR = datetime.now().year
 
-User = get_user_model()
+
+class User(AbstractUser):
+    USER = 'user'
+    ADMIN = 'admin'
+    MODERATOR = 'moderator'
+    choices = [
+        (USER, 'user'),
+        (ADMIN, 'admin'),
+        (MODERATOR, 'moderator'),
+    ]
+
+    email = models.EmailField(unique=True, validators=[validate_email])
+    bio = models.TextField(max_length=250, blank=True)
+    role = models.CharField(max_length=9, choices=choices)
+    confirmation_code = models.UUIDField(default=uuid.uuid4, editable=False)
+    proxy = True
+    REQUIRED_FIELDS = ['email']
 
 
 class Category(models.Model):
