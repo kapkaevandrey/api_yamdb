@@ -40,9 +40,9 @@ class Titles(models.Model):
     """Модель произведений."""
     name = models.CharField(max_length=50)
     year = models.PositiveSmallIntegerField(validators=[MaxValueValidator(CURRENT_YEAR + 1)])
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
     rating = models.PositiveSmallIntegerField(default=0, null=True,
                                               validators=[MaxValueValidator(10)])
-    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
     description = models.TextField(blank=True, null=True)
     genre = models.ManyToManyField(Genre, through="GenreTitle", blank=True)
 
