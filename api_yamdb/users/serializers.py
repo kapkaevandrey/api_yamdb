@@ -17,10 +17,6 @@ class UserSerializer(serializers.ModelSerializer):
             'role',
         )
         model = User
-        extra_kwargs = {
-            'email': {'required': True},
-            'username': {'required': True}
-        }
 
 
 class UserSignupSerializer(serializers.ModelSerializer):
