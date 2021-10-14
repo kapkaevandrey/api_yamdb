@@ -26,6 +26,7 @@ class ReviewSerializer(serializers.ModelSerializer):
     author = serializers.SlugRelatedField(slug_field="username",
                                           read_only=True)
 
+
     class Meta:
         model = Review
         exclude = ('title',)
@@ -38,4 +39,4 @@ class CommentsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Comment
-        fields = "__all__"
+        exclude = ('review',)
