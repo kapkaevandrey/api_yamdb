@@ -1,14 +1,14 @@
 from rest_framework import viewsets, filters
-from api.serializers import (CategoriesSerializer,
-                             GenresSerializer,
-                             TitlesSerializer,
-                             CommentsSerializer,
-                             ReviewSerializer)
-from reviews.models import Categories, Genres, Titles, Comment, Review
+from .serializers import (CategoriesSerializer,
+                          GenresSerializer,
+                          TitlesSerializer,
+                          CommentsSerializer,
+                          ReviewSerializer)
+from reviews.models import Category, Comment, Genre, Titles, Review
 
 
 class CategoriesViewSet(viewsets.ModelViewSet):
-    queryset = Categories.objects.all()
+    queryset = Category.objects.all()
     serializer_class = CategoriesSerializer
     http_method_names = ['get', 'post', 'delete']
     lookup_field = 'slug'
@@ -17,7 +17,7 @@ class CategoriesViewSet(viewsets.ModelViewSet):
 
 
 class GenresViewSet(viewsets.ModelViewSet):
-    queryset = Genres.objects.all()
+    queryset = Genre.objects.all()
     serializer_class = GenresSerializer
     http_method_names = ['get', 'post', 'delete']
     lookup_field = 'slug'
