@@ -16,11 +16,21 @@ class GenresSerializer(serializers.ModelSerializer):
 
 
 class TitlesSerializer(serializers.ModelSerializer):
+
+    category = serializers.SlugRelatedField(slug_field='slug',
+                                            queryset=Category.objects.all(),
+                                            required=True)
+
+    genre = serializers.SlugRelatedField(slug_field='slug',
+                                         queryset=Genre.objects.all(),
+                                         many=True,
+                                         required=True)
+
     class Meta:
         model = Titles
         fields = '__all__'
 
-        
+
 class ReviewSerializer(serializers.ModelSerializer):
     """Сериализатор для модели Отзывов."""
     author = serializers.SlugRelatedField(slug_field="username",

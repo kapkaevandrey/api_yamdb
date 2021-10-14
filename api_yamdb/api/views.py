@@ -5,6 +5,8 @@ from .serializers import (CategoriesSerializer,
                           CommentsSerializer,
                           ReviewSerializer)
 from reviews.models import Category, Comment, Genre, Titles, Review
+from django_filters.rest_framework import DjangoFilterBackend
+from .filter import TitlesFilter
 
 
 class CategoriesViewSet(viewsets.ModelViewSet):
@@ -28,6 +30,8 @@ class GenresViewSet(viewsets.ModelViewSet):
 class TitlesViewSet(viewsets.ModelViewSet):
     queryset = Titles.objects.all()
     serializer_class = TitlesSerializer
+    filter_backends = (DjangoFilterBackend,)
+    filterset_class = TitlesFilter
 
 
 class CommentViewSet(viewsets.ModelViewSet):
