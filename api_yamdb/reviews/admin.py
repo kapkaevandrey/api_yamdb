@@ -4,16 +4,9 @@ from .models import (Review,
                      Comment,
                      Titles,
                      Genre,
-                     Category,
-                     User)
+                     Category)
 
 
-class UserAdmin(admin.ModelAdmin):
-    list_display = ('pk', 'username', 'first_name',
-                    'last_name', 'email', 'bio', 'role')
-
-
-admin.site.register(User, UserAdmin)
 admin.site.register(Review)
 admin.site.register(Comment)
 admin.site.register(Titles)
