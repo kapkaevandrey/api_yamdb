@@ -42,6 +42,7 @@ class ReviewSerializer(serializers.ModelSerializer):
         exclude = ('title',)
         required_fields = ('score',)
 
+
     # TODO пересчёт рейтинга при изменении создании отзыва
     # TODO валидация уникальности записи отдельным методом
 

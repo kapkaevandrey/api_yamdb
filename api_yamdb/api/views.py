@@ -1,14 +1,16 @@
 from django.shortcuts import get_object_or_404
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, filters
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
+
+from .filter import TitlesFilter
+from .permissions import AuthorAdminModeratorOrReadOnly
 from .serializers import (CategoriesSerializer,
                           GenresSerializer,
                           TitlesSerializer,
                           CommentsSerializer,
                           ReviewSerializer)
 from reviews.models import Category, Comment, Genre, Titles, Review
-from django_filters.rest_framework import DjangoFilterBackend
-from .filter import TitlesFilter
 # from .permissions import CategoryGenryTitlePermissions
 
 
@@ -42,7 +44,8 @@ class TitlesViewSet(viewsets.ModelViewSet):
 
 class CommentViewSet(viewsets.ModelViewSet):
     serializer_class = CommentsSerializer
-    permission_classes = (IsAuthenticatedOrReadOnly,)
+    permission_classes = (AuthorAdminModeratorOrReadOnly,
+                          IsAuthenticatedOrReadOnly,)
 
     def perform_create(self, serializer):
         review = get_object_or_404(Review,
@@ -59,7 +62,8 @@ class CommentViewSet(viewsets.ModelViewSet):
 
 class ReviewViewSet(viewsets.ModelViewSet):
     serializer_class = ReviewSerializer
-    permission_classes = (IsAuthenticatedOrReadOnly,)
+    permission_classes = (AuthorAdminModeratorOrReadOnly,
+                          IsAuthenticatedOrReadOnly,)
     def get_title(self):
         title = get_object_or_404(Titles, pk=self.kwargs['title_id'])
         return title
