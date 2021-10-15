@@ -35,10 +35,16 @@ class ReviewSerializer(serializers.ModelSerializer):
     """Сериализатор для модели Отзывов."""
     author = serializers.SlugRelatedField(slug_field="username",
                                           read_only=True)
+    score = serializers.IntegerField(min_value=1, max_value=10)
 
     class Meta:
         model = Review
         exclude = ('title',)
+        required_fields = ('score',)
+
+    # TODO пересчёт рейтинга при изменении создании отзыва
+    # TODO валидация уникальности записи отдельным методом
+
 
 
 class CommentsSerializer(serializers.ModelSerializer):
@@ -48,4 +54,4 @@ class CommentsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Comment
-        fields = "__all__"
+        exclude = ('review',)

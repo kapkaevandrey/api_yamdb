@@ -1,3 +1,5 @@
+from django.shortcuts import get_object_or_404
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework import viewsets, filters
 from .serializers import (CategoriesSerializer,
                           GenresSerializer,
@@ -39,10 +41,41 @@ class TitlesViewSet(viewsets.ModelViewSet):
 
 
 class CommentViewSet(viewsets.ModelViewSet):
-    queryset = Comment.objects.all()
     serializer_class = CommentsSerializer
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+
+    def perform_create(self, serializer):
+        review = get_object_or_404(Review,
+                                   pk=self.kwargs.get('review_id'),
+                                   title__pk=self.kwargs.get('title_id'))
+        serializer.save(author=self.request.user, review=review)
+
+    def get_queryset(self):
+        review = get_object_or_404(Review,
+                                   pk=self.kwargs.get('review_id'),
+                                   title__pk=self.kwargs.get('title_id'))
+        return review.comments.all()
 
 
 class ReviewViewSet(viewsets.ModelViewSet):
-    queryset = Review.objects.all()
     serializer_class = ReviewSerializer
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+    def get_title(self):
+        title = get_object_or_404(Titles, pk=self.kwargs['title_id'])
+        return title
+
+    def get_queryset(self):
+        title = self.get_title()
+        return title.reviews.all()
+
+    def perform_create(self, serializer):
+        title = self.get_title()
+        serializer.save(author=self.request.user, title=title)
+
+    def perform_destroy(self, instance):
+        title = self.get_title()
+        instance.delete()
+        current_ratio = (sum(review.score for review in title.reviews.all())
+                         / len(title.reviews.all()))
+        title.rating = int(current_ratio)
+        title.save()
