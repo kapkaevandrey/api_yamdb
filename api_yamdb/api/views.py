@@ -68,6 +68,13 @@ class ReviewViewSet(viewsets.ModelViewSet):
         title = get_object_or_404(Titles, pk=self.kwargs['title_id'])
         return title
 
+    def update_rating(self):
+        title = self.get_title()
+        current_ratio = (sum(review.score for review in title.reviews.all())
+                         / len(title.reviews.all()))
+        title.rating = int(current_ratio)
+        title.save()
+
     def get_queryset(self):
         title = self.get_title()
         return title.reviews.all()
@@ -75,11 +82,15 @@ class ReviewViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         title = self.get_title()
         serializer.save(author=self.request.user, title=title)
+        self.update_rating()
 
     def perform_destroy(self, instance):
         title = self.get_title()
         instance.delete()
-        current_ratio = (sum(review.score for review in title.reviews.all())
-                         / len(title.reviews.all()))
-        title.rating = int(current_ratio)
-        title.save()
+        self.update_rating()
+
+    def perform_update(self, serializer):
+        title = self.get_title()
+        serializer.save()
+        self.update_rating()
+
