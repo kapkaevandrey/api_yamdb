@@ -11,7 +11,6 @@ from .serializers import (CategoriesSerializer,
                           CommentsSerializer,
                           ReviewSerializer)
 from reviews.models import Category, Comment, Genre, Titles, Review
-# from .permissions import CategoryGenryTitlePermissions
 
 
 class CategoriesViewSet(viewsets.ModelViewSet):
@@ -70,9 +69,14 @@ class ReviewViewSet(viewsets.ModelViewSet):
 
     def update_rating(self):
         title = self.get_title()
-        current_ratio = (sum(review.score for review in title.reviews.all())
-                         / len(title.reviews.all()))
-        title.rating = int(current_ratio)
+        reviews_number = title.reviews.count()
+        if reviews_number == 0:
+            title.rating = None
+        else:
+            current_ratio = (
+                    sum(review.score for review in title.reviews.all())
+                             / reviews_number)
+            title.rating = int(current_ratio)
         title.save()
 
     def get_queryset(self):
