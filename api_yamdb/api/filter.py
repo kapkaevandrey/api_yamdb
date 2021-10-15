@@ -1,5 +1,6 @@
-from reviews.models import Titles
 from django_filters import rest_framework
+
+from reviews.models import Titles
 
 
 class SlugFilter(rest_framework.BaseInFilter, rest_framework.CharFilter):

@@ -12,6 +12,7 @@ CURRENT_YEAR = datetime.now().year
 
 User = get_user_model()
 
+
 class Category(models.Model):
     """Модель категорий произведений."""
     name = models.CharField(max_length=256)
