@@ -12,4 +12,3 @@ admin.site.register(Comment)
 admin.site.register(Titles)
 admin.site.register(Genre)
 admin.site.register(Category)
-# Register your models here.

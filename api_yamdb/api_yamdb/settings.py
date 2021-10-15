@@ -24,7 +24,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_filters',
     'reviews',
-    'api'
+    'api',
+    'users',
 ]
 
 MIDDLEWARE = [
@@ -107,13 +108,18 @@ STATIC_URL = '/static/'
 
 STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static/'),)
 
-REST_FRAMEWORK = {}
-#     'DEFAULT_AUTHENTICATION_CLASSES': [
-#         'rest_framework_simplejwt.authentication.AllowAny',
-#     ],
-# }
+AUTH_USER_MODEL = 'users.User' 
 
-# SIMPLE_JWT = {
-#     'ACCESS_TOKEN_LIFETIME': timedelta(days=10),
-#     'AUTH_HEADER_TYPES': ('Bearer',),
-# }
+EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'sent_emails')
+
+REST_FRAMEWORK = {
+     'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
+}
+DEFAULT_FROM_EMAIL = ''
+SIMPLE_JWT = {
+     'ACCESS_TOKEN_LIFETIME': timedelta(days=10),
+     'AUTH_HEADER_TYPES': ('Bearer',),
+ }

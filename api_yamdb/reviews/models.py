@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.core.validators import (MinValueValidator,
                                     MaxValueValidator,
@@ -10,7 +11,6 @@ from django.core.validators import (MinValueValidator,
 CURRENT_YEAR = datetime.now().year
 
 User = get_user_model()
-
 
 class Category(models.Model):
     """Модель категорий произведений."""
@@ -40,9 +40,9 @@ class Titles(models.Model):
     """Модель произведений."""
     name = models.CharField(max_length=50)
     year = models.PositiveSmallIntegerField(validators=[MaxValueValidator(CURRENT_YEAR + 1)])
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
     rating = models.PositiveSmallIntegerField(default=0, null=True,
                                               validators=[MaxValueValidator(10)])
-    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
     description = models.TextField(blank=True, null=True)
     genre = models.ManyToManyField(Genre, through="GenreTitle", blank=True)
 
