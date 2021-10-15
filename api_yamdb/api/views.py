@@ -68,7 +68,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
         title = get_object_or_404(Titles, pk=self.kwargs['title_id'])
         return title
 
-    def update_rating(self):
+    def update_and_save_rating(self):
         title = self.get_title()
         reviews_number = title.reviews.count()
         if reviews_number == 0:
@@ -87,15 +87,15 @@ class ReviewViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         title = self.get_title()
         serializer.save(author=self.request.user, title=title)
-        self.update_rating()
+        self.update_and_save_rating()
 
     def perform_destroy(self, instance):
         title = self.get_title()
         instance.delete()
-        self.update_rating()
+        self.update_and_save_rating()
 
     def perform_update(self, serializer):
         title = self.get_title()
         serializer.save()
-        self.update_rating()
+        self.update_and_save_rating()
 
