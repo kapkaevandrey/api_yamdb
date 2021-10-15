@@ -63,6 +63,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
     serializer_class = ReviewSerializer
     permission_classes = (AuthorAdminModeratorOrReadOnly,
                           IsAuthenticatedOrReadOnly,)
+
     def get_title(self):
         title = get_object_or_404(Titles, pk=self.kwargs['title_id'])
         return title
