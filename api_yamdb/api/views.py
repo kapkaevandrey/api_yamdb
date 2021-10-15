@@ -5,6 +5,9 @@ from .serializers import (CategoriesSerializer,
                           CommentsSerializer,
                           ReviewSerializer)
 from reviews.models import Category, Comment, Genre, Titles, Review
+from django_filters.rest_framework import DjangoFilterBackend
+from .filter import TitlesFilter
+# from .permissions import CategoryGenryTitlePermissions
 
 
 class CategoriesViewSet(viewsets.ModelViewSet):
@@ -13,7 +16,8 @@ class CategoriesViewSet(viewsets.ModelViewSet):
     http_method_names = ['get', 'post', 'delete']
     lookup_field = 'slug'
     filter_backends = (filters.SearchFilter,)
-    search_fields = ('name',)
+    search_fields = ('slug',)
+    # permission_classes = (CategoryGenryTitlePermissions,)
 
 
 class GenresViewSet(viewsets.ModelViewSet):
@@ -22,12 +26,16 @@ class GenresViewSet(viewsets.ModelViewSet):
     http_method_names = ['get', 'post', 'delete']
     lookup_field = 'slug'
     filter_backends = (filters.SearchFilter,)
-    search_fields = ('name',)
+    search_fields = ('slug',)
+    # permission_classes = (CategoryGenryTitlePermissions,)
 
 
 class TitlesViewSet(viewsets.ModelViewSet):
     queryset = Titles.objects.all()
     serializer_class = TitlesSerializer
+    filter_backends = (DjangoFilterBackend,)
+    filterset_class = TitlesFilter
+    # permission_classes = (CategoryGenryTitlePermissions,)
 
 
 class CommentViewSet(viewsets.ModelViewSet):
