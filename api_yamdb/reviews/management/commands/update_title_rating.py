@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand, CommandError
 
-from reviews.models import Titles
+from reviews.models import Title
 
 
 class Command(BaseCommand):
@@ -8,8 +8,8 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         try:
-            titles = Titles.objects.all()
-        except Titles.DoesNotExist:
+            titles = Title.objects.all()
+        except Title.DoesNotExist:
             raise CommandError("Object Titles is not exists")
 
         for title in titles:
