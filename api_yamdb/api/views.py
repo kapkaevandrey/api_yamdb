@@ -1,15 +1,16 @@
 from django.shortcuts import get_object_or_404
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, filters
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
+
+from .filter import TitlesFilter
+from .permissions import AuthorAdminModeratorOrReadOnly
 from .serializers import (CategoriesSerializer,
                           GenresSerializer,
                           TitlesSerializer,
                           CommentsSerializer,
                           ReviewSerializer)
 from reviews.models import Category, Comment, Genre, Titles, Review
-from django_filters.rest_framework import DjangoFilterBackend
-from .filter import TitlesFilter
-# from .permissions import CategoryGenryTitlePermissions
 
 
 class CategoriesViewSet(viewsets.ModelViewSet):
@@ -42,7 +43,8 @@ class TitlesViewSet(viewsets.ModelViewSet):
 
 class CommentViewSet(viewsets.ModelViewSet):
     serializer_class = CommentsSerializer
-    permission_classes = (IsAuthenticatedOrReadOnly,)
+    permission_classes = (AuthorAdminModeratorOrReadOnly,
+                          IsAuthenticatedOrReadOnly,)
 
     def perform_create(self, serializer):
         review = get_object_or_404(Review,
@@ -59,10 +61,24 @@ class CommentViewSet(viewsets.ModelViewSet):
 
 class ReviewViewSet(viewsets.ModelViewSet):
     serializer_class = ReviewSerializer
-    permission_classes = (IsAuthenticatedOrReadOnly,)
+    permission_classes = (AuthorAdminModeratorOrReadOnly,
+                          IsAuthenticatedOrReadOnly,)
+
     def get_title(self):
         title = get_object_or_404(Titles, pk=self.kwargs['title_id'])
         return title
+
+    def update_and_save_rating(self):
+        title = self.get_title()
+        reviews_number = title.reviews.count()
+        if reviews_number == 0:
+            title.rating = None
+        else:
+            current_ratio = (
+                    sum(review.score for review in title.reviews.all())
+                             / reviews_number)
+            title.rating = int(current_ratio)
+        title.save()
 
     def get_queryset(self):
         title = self.get_title()
@@ -71,11 +87,15 @@ class ReviewViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         title = self.get_title()
         serializer.save(author=self.request.user, title=title)
+        self.update_and_save_rating()
 
     def perform_destroy(self, instance):
         title = self.get_title()
         instance.delete()
-        current_ratio = (sum(review.score for review in title.reviews.all())
-                         / len(title.reviews.all()))
-        title.rating = int(current_ratio)
-        title.save()
+        self.update_and_save_rating()
+
+    def perform_update(self, serializer):
+        title = self.get_title()
+        serializer.save()
+        self.update_and_save_rating()
+
