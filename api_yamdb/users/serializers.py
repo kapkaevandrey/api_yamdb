@@ -35,7 +35,8 @@ class UserSignupSerializer(serializers.ModelSerializer):
 
     def validate_username(self, value):
         if value == 'me':
-            raise serializers.ValidationError('Данный username не разрешен, выберите другой')
+            raise serializers.ValidationError(
+                'Данный username не разрешен, выберите другой')
         return value
 
 

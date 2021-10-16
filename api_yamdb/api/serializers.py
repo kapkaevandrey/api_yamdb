@@ -46,16 +46,26 @@ class TitleGetSerializer(serializers.ModelSerializer):
 class ReviewSerializer(serializers.ModelSerializer):
     """Сериализатор для модели Отзывов."""
     author = serializers.SlugRelatedField(slug_field="username",
-                                          read_only=True)
+                                          read_only=True,
+                                          default=serializers.CurrentUserDefault())
     score = serializers.IntegerField(min_value=1, max_value=10)
 
     class Meta:
         model = Review
         exclude = ('title',)
-        required_fields = ('score',)
+        required_fields = ('score', 'text')
 
-    # TODO пересчёт рейтинга при изменении создании отзыва
-    # TODO валидация уникальности записи отдельным методом
+    def validate(self, attrs):
+        request = self.context['request']
+        title_id = request.parser_context['kwargs']["title_id"]
+        if request.method == "PATCH":
+            return attrs
+        if Review.objects.filter(author=request.user,
+                                 title__id=title_id).exists():
+            raise serializers.ValidationError(
+                'Вы уже оставили отзыв к этому произведению'
+            )
+        return attrs
 
 
 class CommentsSerializer(serializers.ModelSerializer):

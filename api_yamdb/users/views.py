@@ -13,6 +13,7 @@ from .serializers import (UserJwtTokenSerializer, UserSerializer,
 
 User = get_user_model()
 
+
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     permission_classes = [permissions.IsAuthenticated, IsAdmin]
@@ -20,8 +21,6 @@ class UserViewSet(viewsets.ModelViewSet):
     filter_backends = [filters.SearchFilter]
     search_fields = ['username']
     lookup_field = 'username'
- #  pagination_class = PageNumberPagination
-
 
     @action(
         methods=['GET', 'PATCH'],
@@ -39,7 +38,12 @@ class UserViewSet(viewsets.ModelViewSet):
             partial=True
         )
         serializer.is_valid(raise_exception=True)
-        self.perform_update(serializer)
+        role = request.data.get('role')
+        if role is not None and role != user.role:
+            return Response(
+                {'role': 'user'},
+                status=status.HTTP_400_BAD_REQUEST)
+        serializer.save()
         return Response(serializer.data)
 
 
@@ -51,13 +55,9 @@ def signup(request):
     user.confirmation_code = default_token_generator.make_token(user)
     mail_subject = 'confirmation code'
     message = f'Ваш код подтверждения: {user.confirmation_code}'
-    send_mail(
-        mail_subject,
-        message,
-        'admin@yamdb.ru',
-        [user.email],
-        fail_silently=False,
-    )
+    send_mail(mail_subject, message, 'admin@yamdb.ru', [user.email],
+              fail_silently=False,
+              )
     return Response(
         {'email': user.email, 'username': user.username},
         status=status.HTTP_200_OK
@@ -75,4 +75,5 @@ def get_token(request):
         user.save()
         token = AccessToken.for_user(user)
         return Response({'token': f'{token}'}, status=status.HTTP_200_OK)
-    return Response('Ошибка кода подтверждения', status=status.HTTP_400_BAD_REQUEST)
+    return Response('Ошибка кода подтверждения',
+                    status=status.HTTP_400_BAD_REQUEST)
