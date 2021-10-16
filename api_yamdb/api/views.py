@@ -7,9 +7,9 @@ from .filter import TitlesFilter
 from .permissions import (AuthorAdminModeratorOrReadOnly,
                           CategoryGenryTitlePermissions)
 from .serializers import (CategoriesSerializer,
+                          CommentsSerializer,
                           GenresSerializer,
                           TitlesSerializer,
-                          CommentsSerializer,
                           ReviewSerializer,
                           TitleGetSerializer)
 from reviews.models import Category, Genre, Title, Review

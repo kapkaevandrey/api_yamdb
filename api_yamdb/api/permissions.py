@@ -10,9 +10,13 @@ class CategoryGenryTitlePermissions(permissions.BasePermission):
 
 
 class AuthorAdminModeratorOrReadOnly(permissions.BasePermission):
+    """Разрешение на чтение для всех пользователей.
+    Редактирование, обновление или удаление разрешено только
+    авторам, модераторам и администраторам."""
     def has_object_permission(self, request, view, obj):
         if request.method in permissions.SAFE_METHODS:
             return True
         object_author = obj.author == request.user
-        admin_or_moderator = getattr(request.user, "role", "user") in ['admin', 'moderator']
+        admin_or_moderator = (getattr(request.user, "role", "user") in
+                              ['admin', 'moderator'])
         return object_author or admin_or_moderator
