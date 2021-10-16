@@ -5,6 +5,7 @@ from reviews.models import Category, Genre, Title, Comment, Review
 
 class CategoriesSerializer(serializers.ModelSerializer):
     """Сериализатор для модели Категорий"""
+
     class Meta:
         model = Category
         exclude = ('id',)
@@ -12,6 +13,7 @@ class CategoriesSerializer(serializers.ModelSerializer):
 
 class GenresSerializer(serializers.ModelSerializer):
     """Сериализатор для модели Жанров"""
+
     class Meta:
         model = Genre
         exclude = ('id',)
@@ -45,9 +47,10 @@ class TitleGetSerializer(serializers.ModelSerializer):
 
 class ReviewSerializer(serializers.ModelSerializer):
     """Сериализатор для модели Отзывов."""
-    author = serializers.SlugRelatedField(slug_field="username",
-                                          read_only=True,
-                                          default=serializers.CurrentUserDefault())
+    author = serializers.SlugRelatedField(
+        slug_field="username",
+        read_only=True,
+        default=serializers.CurrentUserDefault())
     score = serializers.IntegerField(min_value=1, max_value=10)
 
     class Meta:

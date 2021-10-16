@@ -19,7 +19,8 @@ class Command(BaseCommand):
             else:
                 current_ratio = (
                         sum(review.score for review in title.reviews.all())
-                        / reviews_number)
+                        / reviews_number
+                )
                 title.rating = int(current_ratio)
             title.save()
 

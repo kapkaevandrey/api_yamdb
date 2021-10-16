@@ -90,7 +90,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
         else:
             current_ratio = (
                     sum(review.score for review in title.reviews.all())
-                             / reviews_number)
+                    / reviews_number)
             title.rating = int(current_ratio)
         title.save()
 
@@ -104,12 +104,9 @@ class ReviewViewSet(viewsets.ModelViewSet):
         self.update_and_save_rating()
 
     def perform_destroy(self, instance):
-        title = self.get_title()
         instance.delete()
         self.update_and_save_rating()
 
     def perform_update(self, serializer):
-        title = self.get_title()
         serializer.save()
         self.update_and_save_rating()
-
