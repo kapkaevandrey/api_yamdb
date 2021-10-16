@@ -1,7 +1,6 @@
 from datetime import datetime
 
 from django.contrib.auth import get_user_model
-from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.core.validators import (MinValueValidator,
                                     MaxValueValidator,
@@ -16,7 +15,9 @@ User = get_user_model()
 class Category(models.Model):
     """Модель категорий произведений."""
     name = models.CharField(max_length=256)
-    slug = models.SlugField(max_length=50, unique=True, validators=[validate_slug])
+    slug = models.SlugField(max_length=50,
+                            unique=True,
+                            validators=[validate_slug])
 
     def __str__(self):
         return f"genre_id - <{self.id}>, slug - <{self.slug}>"
@@ -28,7 +29,9 @@ class Category(models.Model):
 class Genre(models.Model):
     """Модель жанров произведений."""
     name = models.CharField(max_length=256)
-    slug = models.SlugField(max_length=50, unique=True, validators=[validate_slug])
+    slug = models.SlugField(max_length=50,
+                            unique=True,
+                            validators=[validate_slug])
 
     def __str__(self):
         return f"genre_id - <{self.id}>, slug - <{self.slug}>"
@@ -37,13 +40,18 @@ class Genre(models.Model):
         ordering = ("name",)
 
 
-class Titles(models.Model):
+class Title(models.Model):
     """Модель произведений."""
     name = models.CharField(max_length=50)
-    year = models.PositiveSmallIntegerField(validators=[MaxValueValidator(CURRENT_YEAR + 1)])
-    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
-    rating = models.PositiveSmallIntegerField(default=0, null=True,
-                                              validators=[MaxValueValidator(10)])
+    year = models.PositiveSmallIntegerField(
+        validators=[MaxValueValidator(CURRENT_YEAR + 1)])
+    category = models.ForeignKey(Category,
+                                 on_delete=models.SET_NULL,
+                                 null=True)
+    rating = models.PositiveSmallIntegerField(
+        blank=True,
+        null=True,
+        validators=[MaxValueValidator(10)])
     description = models.TextField(blank=True, null=True)
     genre = models.ManyToManyField(Genre, through="GenreTitle", blank=True)
 
@@ -56,7 +64,7 @@ class Titles(models.Model):
 
 class GenreTitle(models.Model):
     """Модель связи жанра и произведения."""
-    title = models.ForeignKey(Titles, on_delete=models.CASCADE)
+    title = models.ForeignKey(Title, on_delete=models.CASCADE)
     genre = models.ForeignKey(Genre, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -75,7 +83,7 @@ class Review(models.Model):
                                                  MinValueValidator(1),
                                                  MaxValueValidator(10)
                                              ])
-    title = models.ForeignKey(Titles, on_delete=models.CASCADE,
+    title = models.ForeignKey(Title, on_delete=models.CASCADE,
                               related_name="reviews")
     author = models.ForeignKey(User, on_delete=models.CASCADE,
                                related_name="reviews")
