@@ -1,13 +1,9 @@
 from datetime import datetime
 
+from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.core.validators import (MinValueValidator,
-                                    MaxValueValidator,
-                                    validate_slug)
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
-
-
-CURRENT_YEAR = datetime.now().year
 
 User = get_user_model()
 
@@ -16,8 +12,7 @@ class Category(models.Model):
     """Модель категорий произведений."""
     name = models.CharField(max_length=256)
     slug = models.SlugField(max_length=50,
-                            unique=True,
-                            validators=[validate_slug])
+                            unique=True)
 
     def __str__(self):
         return f"genre_id - <{self.id}>, slug - <{self.slug}>"
@@ -30,8 +25,7 @@ class Genre(models.Model):
     """Модель жанров произведений."""
     name = models.CharField(max_length=256)
     slug = models.SlugField(max_length=50,
-                            unique=True,
-                            validators=[validate_slug])
+                            unique=True)
 
     def __str__(self):
         return f"genre_id - <{self.id}>, slug - <{self.slug}>"
@@ -44,14 +38,14 @@ class Title(models.Model):
     """Модель произведений."""
     name = models.CharField(max_length=50)
     year = models.PositiveSmallIntegerField(
-        validators=[MaxValueValidator(CURRENT_YEAR + 1)])
+        validators=[MaxValueValidator(datetime.now().year)])
     category = models.ForeignKey(Category,
                                  on_delete=models.SET_NULL,
                                  null=True)
     rating = models.PositiveSmallIntegerField(
         blank=True,
         null=True,
-        validators=[MaxValueValidator(10)])
+        validators=[MaxValueValidator(settings.RATING_RANGE['MAX'])])
     description = models.TextField(blank=True, null=True)
     genre = models.ManyToManyField(Genre, through="GenreTitle", blank=True)
 
@@ -78,11 +72,12 @@ class Review(models.Model):
     pub_date = models.DateTimeField('Date of publication',
                                     auto_now_add=True,
                                     db_index=True)
-    score = models.PositiveSmallIntegerField(default=1,
-                                             validators=[
-                                                 MinValueValidator(1),
-                                                 MaxValueValidator(10)
-                                             ])
+    score = models.PositiveSmallIntegerField(
+        default=1,
+        validators=[
+            MinValueValidator(settings.RATING_RANGE['MIN']),
+            MaxValueValidator(settings.RATING_RANGE['MAX'])
+                    ])
     title = models.ForeignKey(Title, on_delete=models.CASCADE,
                               related_name="reviews")
     author = models.ForeignKey(User, on_delete=models.CASCADE,
