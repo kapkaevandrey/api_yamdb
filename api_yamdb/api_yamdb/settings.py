@@ -1,7 +1,7 @@
 import os
 from datetime import timedelta
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
@@ -125,4 +125,10 @@ DEFAULT_FROM_EMAIL = ''
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=10),
     'AUTH_HEADER_TYPES': ('Bearer',),
+}
+
+# Constants
+RATING_RANGE = {
+    "MAX": 10,
+    "MIN": 1
 }
