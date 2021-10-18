@@ -1,6 +1,5 @@
 from datetime import datetime
 
-import django.core.exceptions
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.validators import (
@@ -15,8 +14,7 @@ User = get_user_model()
 class Category(models.Model):
     """Модель категорий произведений."""
     name = models.CharField(max_length=256)
-    slug = models.SlugField(max_length=50,
-                            unique=True)
+    slug = models.SlugField(unique=True)
 
     def __str__(self):
         return f"genre_id - <{self.id}>, slug - <{self.slug}>"
@@ -28,8 +26,7 @@ class Category(models.Model):
 class Genre(models.Model):
     """Модель жанров произведений."""
     name = models.CharField(max_length=256)
-    slug = models.SlugField(max_length=50,
-                            unique=True)
+    slug = models.SlugField(unique=True)
 
     def __str__(self):
         return f"genre_id - <{self.id}>, slug - <{self.slug}>"
