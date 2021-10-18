@@ -1,8 +1,12 @@
 from datetime import datetime
 
+import django.core.exceptions
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.core.validators import MinValueValidator, MaxValueValidator
+from django.core.validators import (
+    MinValueValidator,
+    MaxValueValidator,
+    ValidationError)
 from django.db import models
 
 User = get_user_model()
@@ -37,8 +41,7 @@ class Genre(models.Model):
 class Title(models.Model):
     """Модель произведений."""
     name = models.CharField(max_length=50)
-    year = models.PositiveSmallIntegerField(
-        validators=[MaxValueValidator(datetime.now().year)])
+    year = models.PositiveSmallIntegerField()
     category = models.ForeignKey(Category,
                                  on_delete=models.SET_NULL,
                                  null=True)
@@ -48,6 +51,12 @@ class Title(models.Model):
         validators=[MaxValueValidator(settings.RATING_RANGE['MAX'])])
     description = models.TextField(blank=True, null=True)
     genre = models.ManyToManyField(Genre, through="GenreTitle", blank=True)
+
+    def clean(self):
+        if self.year > datetime.now().year:
+            raise ValidationError(
+                f'Нельзя создать произведение с датой больше {datetime.now().year}'
+            )
 
     def __str__(self):
         return f"title_id - <{self.id}>, name - <{self.name[:15]}>"
