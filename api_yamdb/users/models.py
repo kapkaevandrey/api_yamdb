@@ -1,59 +1,62 @@
-import uuid
+from functools import reduce
 
-from django.contrib.auth.models import AbstractUser, BaseUserManager
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 
-class CustomUserManager(BaseUserManager):
-
-    def create_user(self, email, password, **extra_fields,):
-        user = self.model(email=email, **extra_fields)
-        user.set_password(password)
-        user.save()
-        return user
-
-    def create_superuser(self, email, password, **extra_fields):
-        extra_fields.setdefault('role', 'admin')
-        user = self.model(email=email, is_staff=True,
-                          is_superuser=True, **extra_fields)
-        user.set_password(password)
-        user.save()
-        return user
-
-
-class User(AbstractUser):
+class Role():
     USER = 'user'
     ADMIN = 'admin'
     MODERATOR = 'moderator'
-    choices = [
+    CHOICES = [
         (USER, 'user'),
         (ADMIN, 'admin'),
         (MODERATOR, 'moderator'),
     ]
 
+    @classmethod
+    def get_max_chice_length(cls):
+        return len(reduce(lambda a, b: a[1] if (
+            len(a[1]) > len(b[1])) else b[1], cls.CHOICES))
+
+
+class User(AbstractUser):
+    first_name = models.CharField('Имя',
+                                  max_length=150,
+                                  null=True,
+                                  blank=True,)
+
+    last_name = models.CharField('Фамилия',
+                                 max_length=150,
+                                 null=True,
+                                 blank=True,)
+
+    username = models.CharField('Имя пользователя',
+                                unique=True,
+                                max_length=150)
+
     email = models.EmailField(
+        'электронная почта',
         unique=True,
+        max_length=254
     )
 
     bio = models.TextField(
-        max_length=250,
+        'о себе',
         blank=True,
+        null=True
     )
 
     role = models.CharField(
-        max_length=9,
-        choices=choices,
-        default='user'
-    )
-
-    confirmation_code = models.UUIDField(
-        default=uuid.uuid4,
-        editable=False,
+        'пользовательская роль',
+        max_length=Role.get_max_chice_length(),
+        choices=Role.CHOICES,
+        default=Role.USER
     )
 
     REQUIRED_FIELDS = ['email']
 
-    objects = CustomUserManager()
-
     class Meta:
-        ordering = ['-id']
+        ordering = ['-username']
+        verbose_name = 'Пользователь'
+        verbose_name_plural = 'Пользователи'
