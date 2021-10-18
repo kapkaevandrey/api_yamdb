@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
@@ -38,11 +39,11 @@ class UserViewSet(viewsets.ModelViewSet):
             partial=True
         )
         serializer.is_valid(raise_exception=True)
-        role = request.data.get('role')
+        role = serializer.validated_data.get('role')
         if role is not None and role != user.role:
             return Response(
                 {'role': 'user'},
-                status=status.HTTP_400_BAD_REQUEST)
+                status=status.HTTP_200_OK)
         serializer.save()
         return Response(serializer.data)
 
@@ -51,17 +52,18 @@ class UserViewSet(viewsets.ModelViewSet):
 def signup(request):
     serializer = UserSignupSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
-    user = serializer.save()
-    user.confirmation_code = default_token_generator.make_token(user)
+    email = serializer.data.get('email')
+    username = serializer.data.get('username')
+    user, created = User.objects.get_or_create(email=email, username=username)
+    confirmation_code = default_token_generator.make_token(user)
     mail_subject = 'confirmation code'
-    message = f'Ваш код подтверждения: {user.confirmation_code}'
-    send_mail(mail_subject, message, 'admin@yamdb.ru', [user.email],
-              fail_silently=False,
-              )
-    return Response(
-        {'email': user.email, 'username': user.username},
-        status=status.HTTP_200_OK
-    )
+    message = f'Ваш код подтверждения: {confirmation_code}'
+    send_mail(mail_subject,
+              message,
+              settings.SERVICE_EMAIL,
+              [email],
+              fail_silently=False)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 @api_view(['POST'])
