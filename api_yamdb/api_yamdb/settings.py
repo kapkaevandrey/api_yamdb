@@ -132,3 +132,4 @@ RATING_RANGE = {
     "MAX": 10,
     "MIN": 1
 }
+SERVICE_EMAIL = 'test@yamdb.test'

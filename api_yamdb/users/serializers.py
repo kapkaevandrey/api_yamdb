@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
+from django.core.validators import RegexValidator
 from rest_framework import serializers
-from rest_framework.validators import UniqueValidator
 
 User = get_user_model()
 
@@ -19,19 +19,14 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
 
 
-class UserSignupSerializer(serializers.ModelSerializer):
-    email = serializers.EmailField(
-        required=True,
-        validators=[UniqueValidator(queryset=User.objects.all())]
-    )
-    username = serializers.CharField(
-        required=True,
-        validators=[UniqueValidator(queryset=User.objects.all())]
-    )
-
-    class Meta:
-        fields = ('email', 'username')
-        model = User
+class UserSignupSerializer(serializers.Serializer):
+    email = serializers.EmailField(required=True,)
+    username = serializers.CharField(required=True, validators=[
+        RegexValidator(
+            regex=r'^[\w.@+-]+\Z',
+            message='Пользователя с таким именем создать невозможно',
+        ),
+    ])
 
     def validate_username(self, value):
         if value == 'me':
@@ -40,10 +35,6 @@ class UserSignupSerializer(serializers.ModelSerializer):
         return value
 
 
-class UserJwtTokenSerializer(serializers.ModelSerializer):
+class UserJwtTokenSerializer(serializers.Serializer):
     username = serializers.CharField(required=True)
     confirmation_code = serializers.CharField(required=True)
-
-    class Meta:
-        fields = ('username', 'confirmation_code')
-        model = User
