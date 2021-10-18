@@ -20,7 +20,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class UserSignupSerializer(serializers.Serializer):
-    email = serializers.EmailField(required=True)
+    email = serializers.EmailField(required=True,)
     username = serializers.CharField(required=True, validators=[
         RegexValidator(
             regex=r'^[\w.@+-]+\Z',

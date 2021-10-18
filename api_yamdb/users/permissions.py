@@ -1,6 +1,6 @@
 from rest_framework import permissions
 
-from .models import Role
+from .models import User
 
 
 class IsAdmin(permissions.BasePermission):
@@ -8,6 +8,6 @@ class IsAdmin(permissions.BasePermission):
         if request.user.is_authenticated:
             return (request.user.is_superuser
                     or request.user.is_staff
-                    or request.user.role == Role.ADMIN
+                    or request.user.role == User.ADMIN
                     )
         return False

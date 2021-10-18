@@ -4,7 +4,7 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 
-class Role():
+class User(AbstractUser):
     USER = 'user'
     ADMIN = 'admin'
     MODERATOR = 'moderator'
@@ -13,14 +13,6 @@ class Role():
         (ADMIN, 'admin'),
         (MODERATOR, 'moderator'),
     ]
-
-    @classmethod
-    def get_max_chice_length(cls):
-        return len(reduce(lambda a, b: a[1] if (
-            len(a[1]) > len(b[1])) else b[1], cls.CHOICES))
-
-
-class User(AbstractUser):
     first_name = models.CharField('Имя',
                                   max_length=150,
                                   null=True,
@@ -49,9 +41,10 @@ class User(AbstractUser):
 
     role = models.CharField(
         'пользовательская роль',
-        max_length=Role.get_max_chice_length(),
-        choices=Role.CHOICES,
-        default=Role.USER
+        max_length=len(reduce(lambda a, b: a[1] if (
+            len(a[1]) > len(b[1])) else b[1], CHOICES)),
+        choices=CHOICES,
+        default=USER
     )
 
     REQUIRED_FIELDS = ['email']
