@@ -56,11 +56,11 @@ def signup(request):
     email = serializer.data.get('email')
     username = serializer.data.get('username')
     try:
-        user, created = User.objects.get_or_create(email=email, username=username)
+        user, created = User.objects.get_or_create(
+            email=email, username=username)
     except Exception as e:
-        return Response({'error':str(e)},
-                    status=status.HTTP_400_BAD_REQUEST)
-
+        return Response({'error': str(e)},
+                        status=status.HTTP_400_BAD_REQUEST)
     confirmation_code = default_token_generator.make_token(user)
     mail_subject = 'confirmation code'
     message = f'Ваш код подтверждения: {confirmation_code}'
