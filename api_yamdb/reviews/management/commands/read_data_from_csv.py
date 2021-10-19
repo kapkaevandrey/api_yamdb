@@ -45,7 +45,6 @@ class Command(BaseCommand):
         os.chdir(settings.BASE_DIR)
         os.chdir("...")
         os.chdir(pathlib.Path.cwd() / 'static' / 'data')
-        print(pathlib.Path.cwd() / 'static' / 'data')
 
     @staticmethod
     def detect_encoding(file) -> dict:
