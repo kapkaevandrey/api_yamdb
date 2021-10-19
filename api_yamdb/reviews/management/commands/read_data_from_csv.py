@@ -39,12 +39,17 @@ class Command(BaseCommand):
             self.stdout.write(self.style.SUCCESS(f'File {file} is exists.'))
 
     @staticmethod
-    def go_to_dir_with_data_files() -> None:
+    def go_to_dir_with_data_files(path: str) -> None:
         """Переходит в директорию где должны хранится файлы для заполнения из БД.
         По умолчанию: ~/static/data"""
-        os.chdir(settings.BASE_DIR)
-        os.chdir("...")
-        os.chdir(pathlib.Path.cwd() / 'static' / 'data')
+        if path is None:
+            os.chdir(settings.BASE_DIR)
+            os.chdir("...")
+            os.chdir(pathlib.Path.cwd() / 'static' / 'data')
+        elif os.path.exists(path):
+            os.chdir(path)
+        else:
+            raise CommandError(f"Path {path} is not exist")
 
     @staticmethod
     def detect_encoding(file) -> dict:
@@ -68,8 +73,16 @@ class Command(BaseCommand):
             for row in reader:
                 model_object.objects.create(**row)
 
+    def add_arguments(self, parser):
+        parser.add_argument(
+            'path_to_dir',
+            type=str,
+            help='Abs path to dir with files',
+            nargs="?")
+
     def handle(self, *args, **options):
-        Command.go_to_dir_with_data_files()
+        path = options['path_to_dir']
+        Command.go_to_dir_with_data_files(path=path)
         self.check_that_all_files_exists()
         try:
             Command.load_data_from_csv()
