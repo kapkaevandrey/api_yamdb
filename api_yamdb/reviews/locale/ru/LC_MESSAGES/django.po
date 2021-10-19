@@ -1,0 +1,141 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-10-20 01:02+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
+"%100>=11 && n%100<=14)? 2 : 3);\n"
+
+#: .\models.py:24
+msgid "first_name"
+msgstr "Имя"
+
+#: .\models.py:30
+msgid "last_name"
+msgstr "Фамилия"
+
+#: .\models.py:36
+msgid "username"
+msgstr "Имя пользователя"
+
+#: .\models.py:41
+msgid "email"
+msgstr "Электронная почта"
+
+#: .\models.py:47
+msgid "bio"
+msgstr "О себе"
+
+#: .\models.py:53
+msgid "role"
+msgstr "Роль"
+
+#: .\models.py:76
+msgid "User"
+msgstr "Пользователь"
+
+#: .\models.py:77
+msgid "Users"
+msgstr "Пользователи"
+
+#: .\models.py:82 .\models.py:96 .\models.py:110
+msgid "name"
+msgstr ""
+
+#: .\models.py:83 .\models.py:97
+msgid "slug"
+msgstr ""
+
+#: .\models.py:87
+msgid "Category"
+msgstr ""
+
+#: .\models.py:88
+msgid "Categories"
+msgstr ""
+
+#: .\models.py:101
+msgid "Genre"
+msgstr ""
+
+#: .\models.py:102
+msgid "Genres"
+msgstr ""
+
+#: .\models.py:111
+msgid "year"
+msgstr ""
+
+#: .\models.py:116
+msgid "category"
+msgstr ""
+
+#: .\models.py:118
+msgid "description"
+msgstr ""
+
+#: .\models.py:123 .\models.py:151
+msgid "genre"
+msgstr ""
+
+#: .\models.py:134
+msgid "Title"
+msgstr ""
+
+#: .\models.py:135
+msgid "Titles"
+msgstr ""
+
+#: .\models.py:146 .\models.py:176
+msgid "title"
+msgstr ""
+
+#: .\models.py:161 .\models.py:201
+msgid "text"
+msgstr ""
+
+#: .\models.py:163 .\models.py:203
+msgid "date of publication"
+msgstr ""
+
+#: .\models.py:167
+msgid "score"
+msgstr ""
+
+#: .\models.py:182 .\models.py:210
+msgid "author"
+msgstr ""
+
+#: .\models.py:191
+msgid "Review"
+msgstr ""
+
+#: .\models.py:192
+msgid "Reviews"
+msgstr ""
+
+#: .\models.py:216
+msgid "review"
+msgstr ""
+
+#: .\models.py:221
+msgid "Comment"
+msgstr ""
+
+#: .\models.py:222
+msgid "Comments"
+msgstr ""

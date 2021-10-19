@@ -90,7 +90,6 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LOCALE_PATHS = [
     os.path.join(BASE_DIR, '/locale'),
-
 ]
 
 # Internationalization
@@ -110,7 +109,6 @@ USE_L10N = True
 USE_TZ = True
 
 LOCALE_PATHS = [
-    os.path.join(BASE_DIR, 'users/locale'),
     os.path.join(BASE_DIR, 'reviews/locale')
 ]
 
