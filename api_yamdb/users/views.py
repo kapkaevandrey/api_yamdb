@@ -1,8 +1,8 @@
-from django.db import IntegrityError
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
+from django.db import IntegrityError
 from django.shortcuts import get_object_or_404
 from rest_framework import filters, permissions, status, viewsets
 from rest_framework.decorators import action, api_view
@@ -58,7 +58,7 @@ def signup(request):
     try:
         user, created = User.objects.get_or_create(
             email=email, username=username)
-    except Exception as e:
+    except IntegrityError as e:
         return Response({'error': str(e)},
                         status=status.HTTP_400_BAD_REQUEST)
     confirmation_code = default_token_generator.make_token(user)

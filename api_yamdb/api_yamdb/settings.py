@@ -92,7 +92,11 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru-RU'
+
+LANGUAGES = (
+    ('ru', 'Russian'),
+)
 
 TIME_ZONE = 'UTC'
 
@@ -102,6 +106,10 @@ USE_L10N = True
 
 USE_TZ = True
 
+LOCALE_PATHS = [
+    os.path.join(BASE_DIR, 'users/locale'),
+
+]
 
 # Static files (CSS, JavaScript, Images)
 
