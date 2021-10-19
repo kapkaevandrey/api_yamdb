@@ -1,15 +1,13 @@
 from rest_framework import permissions
 
 
-class AdminorOrReadOnly(permissions.BasePermission):
+class AdminOrReadOnly(permissions.BasePermission):
     """Фильтр - разрешает GET запросы всем, остальное только для ADMIN"""
 
     def has_permission(self, request, view):
         return (request.method in permissions.SAFE_METHODS
                 or (request.user.is_authenticated
-                    and (
-                        request.user.role == request.user.ADMIN
-                        or request.user.is_superuser)))
+                    and request.user.is_admin))
 
 
 class AuthorAdminModeratorOrReadOnly(permissions.BasePermission):
@@ -20,10 +18,14 @@ class AuthorAdminModeratorOrReadOnly(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         if request.method in permissions.SAFE_METHODS:
             return True
-        object_author = obj.author == request.user
-        admin_or_moderator = (
-                request.user.is_authenticated
-                and (request.user.role == request.user.ADMIN
-                     or request.user.role == request.user.MODERATOR))
-        return object_author or admin_or_moderator or request.user.is_staff or request.user.is_superuser
-    # TODO вынести определение свойства в отдельный метод
+        if request.user.is_authenticated:
+            return (obj.author == request.user or
+                    request.user.is_admin_or_moderator)
+        return False
+
+
+class IsAdmin(permissions.BasePermission):
+    def has_permission(self, request, view):
+        if request.user.is_authenticated:
+            return request.user.is_admin
+        return False

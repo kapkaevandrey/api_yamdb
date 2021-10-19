@@ -1,5 +1,5 @@
 from rest_framework import mixins, viewsets, filters
-from .permissions import AdminorOrReadOnly
+from .permissions import AdminOrReadOnly
 
 
 class GenresCategoryViewSet(
@@ -12,4 +12,4 @@ class GenresCategoryViewSet(
     lookup_field = 'slug'
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name',)
-    permission_classes = (AdminorOrReadOnly,)
+    permission_classes = (AdminOrReadOnly,)
