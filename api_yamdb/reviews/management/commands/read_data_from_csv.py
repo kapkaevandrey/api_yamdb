@@ -3,10 +3,10 @@ import os
 import pathlib
 
 from chardet import detect
+from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 from django.contrib.auth import get_user_model
 
-from api_yamdb import settings
 from reviews.models import (Comment,
                             Category,
                             Genre,
