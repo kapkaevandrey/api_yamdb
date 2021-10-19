@@ -1,4 +1,6 @@
+from django.conf import settings
 from rest_framework import serializers
+
 
 from reviews.models import Category, Genre, Title, Comment, Review
 
@@ -57,7 +59,8 @@ class ReviewSerializer(serializers.ModelSerializer):
         slug_field="username",
         read_only=True,
         default=serializers.CurrentUserDefault())
-    score = serializers.IntegerField(min_value=1, max_value=10)
+    score = serializers.IntegerField(min_value=settings.RATING_RANGE['MIN'],
+                                     max_value=settings.RATING_RANGE['MAX'])
 
     class Meta:
         model = Review
@@ -66,9 +69,9 @@ class ReviewSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs):
         request = self.context['request']
-        title_id = request.parser_context['kwargs']["title_id"]
         if request.method == "PATCH":
             return attrs
+        title_id = request.parser_context['kwargs'].get("title_id")
         if Review.objects.filter(author=request.user,
                                  title__id=title_id).exists():
             raise serializers.ValidationError(

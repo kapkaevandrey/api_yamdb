@@ -66,35 +66,10 @@ class ReviewViewSet(viewsets.ModelViewSet):
     permission_classes = (AuthorAdminModeratorOrReadOnly,
                           IsAuthenticatedOrReadOnly,)
 
-    def get_title(self):
-        title = get_object_or_404(Title, pk=self.kwargs['title_id'])
-        return title
-
-    def update_and_save_rating(self):
-        title = self.get_title()
-        reviews_number = title.reviews.count()
-        if reviews_number == 0:
-            title.rating = None
-        else:
-            current_ratio = (
-                sum(review.score for review in title.reviews.all())
-                / reviews_number)
-            title.rating = int(current_ratio)
-        title.save()
-
     def get_queryset(self):
-        title = self.get_title()
+        title = get_object_or_404(Title, pk=self.kwargs.get('title_id'))
         return title.reviews.all()
 
     def perform_create(self, serializer):
-        title = self.get_title()
+        title = get_object_or_404(Title, pk=self.kwargs.get('title_id'))
         serializer.save(author=self.request.user, title=title)
-        self.update_and_save_rating()
-
-    def perform_destroy(self, instance):
-        instance.delete()
-        self.update_and_save_rating()
-
-    def perform_update(self, serializer):
-        serializer.save()
-        self.update_and_save_rating()

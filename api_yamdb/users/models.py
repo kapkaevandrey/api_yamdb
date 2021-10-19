@@ -49,6 +49,19 @@ class User(AbstractUser):
 
     REQUIRED_FIELDS = ['email']
 
+    @property
+    def is_admin(self):
+        if self.is_authenticated:
+            return (self.is_superuser
+                    or self.is_staff
+                    or self.role == User.ADMIN
+                    )
+        return False
+
+    @property
+    def is_admin_or_moderator(self):
+        return self.is_admin or self.role == User.MODERATOR
+
     class Meta:
         ordering = ['-username']
         verbose_name = 'Пользователь'
