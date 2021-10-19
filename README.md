@@ -15,6 +15,7 @@
  - _[Django 2.2.16](https://docs.djangoproject.com/en/2.2/)_
  - _[Django REST framework 3.12.4](https://www.django-rest-framework.org/)_
  - _[Simple JWT 4.8.0](https://django-rest-framework-simplejwt.readthedocs.io/en/latest/)_
+ - _[Chardet 4.0.0](https://pypi.org/project/chardet/)_
 ### _Как запустить проект_:
 
 Клонировать репозиторий и перейти в него в командной строке:
@@ -49,10 +50,9 @@ python3 pip install -r requirments.txt
 
 Выполните миграции.
 
-☑️***Примечание:*** Если у вас уже есть база данных заполненная произведениями и отзывами, вы можете обновить рейтинг всех произведений при помощи команды:
-```
-python3 manage.py update_title_rating
-```
+☑️***Примечание:*** Если вы хотите загрузить данные в БД можете перейти по ссылке ниже
+
+### [__Загрузка в базу данных с использованием CSV__](https://github.com/kapkaevandrey/api_yamdb/blob/main/Load%20Data.md)
 
 ### _Пользовательские роли в проекте_:
 1. **Аноним :alien:**
