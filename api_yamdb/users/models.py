@@ -2,6 +2,7 @@ from functools import reduce
 
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 
 class User(AbstractUser):
@@ -13,34 +14,37 @@ class User(AbstractUser):
         (ADMIN, 'admin'),
         (MODERATOR, 'moderator'),
     ]
-    first_name = models.CharField('Имя',
-                                  max_length=150,
-                                  null=True,
-                                  blank=True,)
+    first_name = models.CharField(
+        _('first_name'),
+        max_length=150,
+        null=True,
+        blank=True,)
 
-    last_name = models.CharField('Фамилия',
-                                 max_length=150,
-                                 null=True,
-                                 blank=True,)
+    last_name = models.CharField(
+        _('last_name'),
+        max_length=150,
+        null=True,
+        blank=True,)
 
-    username = models.CharField('Имя пользователя',
-                                unique=True,
-                                max_length=150)
+    username = models.CharField(
+        _('username'),
+        unique=True,
+        max_length=150)
 
     email = models.EmailField(
-        'электронная почта',
+        _('email'),
         unique=True,
         max_length=254
     )
 
     bio = models.TextField(
-        'о себе',
+        _('bio'),
         blank=True,
         null=True
     )
 
     role = models.CharField(
-        'пользовательская роль',
+        _('role'),
         max_length=len(reduce(lambda a, b: a[1] if (
             len(a[1]) > len(b[1])) else b[1], CHOICES)),
         choices=CHOICES,
@@ -51,5 +55,5 @@ class User(AbstractUser):
 
     class Meta:
         ordering = ['-username']
-        verbose_name = 'Пользователь'
-        verbose_name_plural = 'Пользователи'
+        verbose_name = _('User')
+        verbose_name_plural = _('Users')
