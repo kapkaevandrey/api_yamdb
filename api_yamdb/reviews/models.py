@@ -39,13 +39,10 @@ class Title(models.Model):
     """Модель произведений."""
     name = models.CharField(max_length=50)
     year = models.PositiveSmallIntegerField()
-    category = models.ForeignKey(Category,
-                                 on_delete=models.SET_NULL,
-                                 null=True)
-    rating = models.PositiveSmallIntegerField(
-        blank=True,
-        null=True,
-        validators=[MaxValueValidator(settings.RATING_RANGE['MAX'])])
+    category = models.ForeignKey(
+        Category,
+        on_delete=models.SET_NULL,
+        null=True)
     description = models.TextField(blank=True, null=True)
     genre = models.ManyToManyField(Genre, through="GenreTitle", blank=True)
 
@@ -82,8 +79,7 @@ class Review(models.Model):
         default=1,
         validators=[
             MinValueValidator(settings.RATING_RANGE['MIN']),
-            MaxValueValidator(settings.RATING_RANGE['MAX'])
-                    ])
+            MaxValueValidator(settings.RATING_RANGE['MAX'])])
     title = models.ForeignKey(Title, on_delete=models.CASCADE,
                               related_name="reviews")
     author = models.ForeignKey(User, on_delete=models.CASCADE,

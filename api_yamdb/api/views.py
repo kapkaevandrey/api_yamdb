@@ -1,56 +1,44 @@
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
-from rest_framework import viewsets, filters, mixins
+from rest_framework import viewsets, permissions
+from .mixins import GenresCategoryViewSet
+from django.db.models import Avg
 
 from .filter import TitlesFilter
-from .permissions import (AuthorAdminModeratorOrReadOnly,
-                          CategoryGenryTitlePermissions)
-from .serializers import (CategoriesSerializer,
-                          CommentsSerializer,
-                          GenresSerializer,
-                          TitlesSerializer,
-                          ReviewSerializer,
-                          TitleGetSerializer)
+from .permissions import (
+    AuthorAdminModeratorOrReadOnly,
+    AdminorOrReadOnly)
+from .serializers import (
+    CategoriesSerializer,
+    CommentsSerializer,
+    GenresSerializer,
+    TitlesSerializer,
+    ReviewSerializer,
+    TitleGetSerializer)
 from reviews.models import Category, Genre, Title, Review
 
 
-class GenresCategorySet(mixins.CreateModelMixin,
-                        mixins.DestroyModelMixin,
-                        mixins.ListModelMixin,
-                        viewsets.GenericViewSet):
-    pass
-
-
-class CategoriesViewSet(GenresCategorySet):
+class CategoriesViewSet(GenresCategoryViewSet):
     queryset = Category.objects.all()
     serializer_class = CategoriesSerializer
-    http_method_names = ['get', 'post', 'delete']
-    lookup_field = 'slug'
-    filter_backends = (filters.SearchFilter,)
-    search_fields = ('name',)
-    permission_classes = (CategoryGenryTitlePermissions,)
 
 
-class GenresViewSet(GenresCategorySet):
+class GenresViewSet(GenresCategoryViewSet):
     queryset = Genre.objects.all()
     serializer_class = GenresSerializer
-    http_method_names = ['get', 'post', 'delete']
-    lookup_field = 'slug'
-    filter_backends = (filters.SearchFilter,)
-    search_fields = ('name',)
-    permission_classes = (CategoryGenryTitlePermissions,)
 
 
 class TitlesViewSet(viewsets.ModelViewSet):
-    queryset = Title.objects.all()
+    review = Review.objects.all()
+    queryset = Title.objects.annotate(rating=Avg('reviews__score'))
     serializer_class = TitlesSerializer
     filter_backends = (DjangoFilterBackend,)
     filterset_class = TitlesFilter
-    permission_classes = (CategoryGenryTitlePermissions,)
+    permission_classes = (AdminorOrReadOnly,)
 
     def get_serializer_class(self):
-        if self.request.method in ['POST', 'PATCH']:
+        if self.request.method not in permissions.SAFE_METHODS:
             return TitlesSerializer
         return TitleGetSerializer
 

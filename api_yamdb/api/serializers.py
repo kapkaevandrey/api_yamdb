@@ -23,13 +23,16 @@ class GenresSerializer(serializers.ModelSerializer):
 
 class TitlesSerializer(serializers.ModelSerializer):
     """Сериализатор для POST запросов модели Title"""
-    category = serializers.SlugRelatedField(slug_field='slug',
-                                            queryset=Category.objects.all(),
-                                            required=True)
-    genre = serializers.SlugRelatedField(slug_field='slug',
-                                         queryset=Genre.objects.all(),
-                                         many=True,
-                                         required=True)
+    category = serializers.SlugRelatedField(
+        slug_field='slug',
+        queryset=Category.objects.all(),
+        required=True)
+
+    genre = serializers.SlugRelatedField(
+        slug_field='slug',
+        queryset=Genre.objects.all(),
+        many=True,
+        required=True)
 
     class Meta:
         model = Title
@@ -38,13 +41,16 @@ class TitlesSerializer(serializers.ModelSerializer):
 
 class TitleGetSerializer(serializers.ModelSerializer):
     """Серилализатор для GET запросов модели Title"""
-    genre = GenresSerializer(read_only=True, many=True)
-    category = CategoriesSerializer(read_only=True)
-    rating = serializers.IntegerField(read_only=True, required=False)
+    genre = GenresSerializer(many=True)
+    category = CategoriesSerializer()
+    rating = serializers.IntegerField()
 
     class Meta:
-        fields = "__all__"
+        fields = ('__all__')
         model = Title
+        read_only_fields = (
+            'name', 'year', 'category',
+            'description', 'genre')
 
 
 class ReviewSerializer(serializers.ModelSerializer):
