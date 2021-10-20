@@ -36,13 +36,13 @@ class UserSignupSerializer(serializers.Serializer):
 
 
 class UserJwtTokenSerializer(serializers.Serializer):
-    username = serializers.CharField(required=True)
-    confirmation_code = serializers.CharField(required=True, validators=[
+    username = serializers.CharField(required=True, validators=[
         RegexValidator(
             regex=r'^[\w.@+-]+\Z',
             message='Пользователя с таким именем создать невозможно',
         ),
     ])
+    confirmation_code = serializers.CharField(required=True)
 
 
 class CategoriesSerializer(serializers.ModelSerializer):
