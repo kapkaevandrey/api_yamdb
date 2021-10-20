@@ -1,5 +1,4 @@
 from datetime import datetime
-from functools import reduce
 
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
@@ -16,9 +15,9 @@ class User(AbstractUser):
     ADMIN = 'admin'
     MODERATOR = 'moderator'
     CHOICES = [
-        (USER, 'user'),
-        (ADMIN, 'admin'),
-        (MODERATOR, 'moderator'),
+        (USER, _('user')),
+        (ADMIN, _('admin')),
+        (MODERATOR, _('moderator')),
     ]
     first_name = models.CharField(
         _('first_name'),
@@ -51,27 +50,29 @@ class User(AbstractUser):
 
     role = models.CharField(
         _('role'),
-        max_length=len(reduce(lambda a, b: a[1] if (
-            len(a[1]) > len(b[1])) else b[1], CHOICES)),
+        max_length=max((role_pair[1] for role_pair in CHOICES), key=len),
         choices=CHOICES,
         default=USER
     )
+
+    def __str__(self):
+        return self.username
 
     REQUIRED_FIELDS = ['email']
 
     @property
     def is_admin(self):
         return (
-            self.is_superuser
-            or self.is_staff
-            or self.role == User.ADMIN)
+                self.is_superuser
+                or self.is_staff
+                or self.role == User.ADMIN)
 
     @property
     def is_admin_or_moderator(self):
         return self.is_admin or self.role == User.MODERATOR
 
     class Meta:
-        ordering = ['-username']
+        ordering = ['username']
         verbose_name = _('User')
         verbose_name_plural = _('Users')
 
@@ -87,7 +88,7 @@ class Category(models.Model):
         verbose_name_plural = _('Categories')
 
     def __str__(self):
-        return f'id {self.id} {self.slug}'
+        return _('id {id} {slug}').format(id=self.id, slug=self.slug)
 
 
 class Genre(models.Model):
@@ -101,7 +102,7 @@ class Genre(models.Model):
         verbose_name_plural = _('Genres')
 
     def __str__(self):
-        return f'id {self.id} {self.slug}'
+        return _('id {id} {slug}').format(id=self.id, slug=self.slug)
 
 
 class Title(models.Model):
@@ -125,8 +126,8 @@ class Title(models.Model):
     def clean(self):
         if self.year > datetime.now().year:
             raise ValidationError(
-                f'Нельзя создать произведение с датой больше '
-                f'{datetime.now().year}'
+                _('Нельзя создать произведение с датой больше '
+                  '{datetime.now().year}').format(date=datetime.now().year)
             )
 
     class Meta:
@@ -135,7 +136,8 @@ class Title(models.Model):
         verbose_name_plural = _('Titles')
 
     def __str__(self):
-        return f'id - {self.id}, name - {self.name[:15]}'
+        return (_('id - {id}, name - {name}').
+                format(id=self.id, name=self.name[:15]))
 
 
 class GenreTitle(models.Model):
@@ -152,8 +154,14 @@ class GenreTitle(models.Model):
     )
 
     def __str__(self):
-        return (f'title_id - {self.title.id} {self.title.name[:15]}'
-                f'genre_id - {self.genre_id} {self.genre.slug}')
+        return (
+            _('title_id - {title_id} {title_name} '
+              'genre_id - {genre_id} {slug}').
+            format(
+                title_id=self.title.id,
+                title_name=self.title.name[:15],
+                genre_id=self.genre.id,
+                slug=self.genre.slug))
 
 
 class Review(models.Model):
@@ -185,15 +193,21 @@ class Review(models.Model):
     class Meta:
         constraints = [
             models.UniqueConstraint(fields=['author', 'title'],
-                                    name='unique review'),
+                                    name=_('unique review')),
         ]
         ordering = ['-pub_date']
         verbose_name = _('Review')
         verbose_name_plural = _('Reviews')
 
     def __str__(self):
-        return (f'Author - {self.author}; title_id-{self.title} '
-                f'review_id-{self.id} text part - {self.text[:15]}.')
+        return (_('Author - {author}; title_id-{title} '
+                  'review_id-{id} text part - {text}.').
+                format(
+            author=self.author,
+            id=self.id,
+            title_id=self.title.id,
+            text=self.text[:15])
+        )
 
 
 class Comment(models.Model):
@@ -222,5 +236,11 @@ class Comment(models.Model):
         verbose_name_plural = _('Comments')
 
     def __str__(self):
-        return (f'Author - {self.author}; review_id - {self.review_id} '
-                f'comment_id - {self.id} text_part - {self.text[:15]}.')
+        return (_('Author - {author}; review_id-{review_id} '
+                  'comment_id-{id} text part - {text}.').
+                format(
+            author=self.author,
+            id=self.id,
+            review_id=self.review.id,
+            text=self.text[:15])
+        )
