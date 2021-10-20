@@ -7,7 +7,7 @@ from django.core.validators import (
     MaxValueValidator,
     ValidationError)
 from django.db import models
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext as _
 
 
 class User(AbstractUser):
@@ -205,7 +205,7 @@ class Review(models.Model):
                 format(
             author=self.author,
             id=self.id,
-            title_id=self.title.id,
+            title=self.title.id,
             text=self.text[:15])
         )
 
