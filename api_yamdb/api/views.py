@@ -84,7 +84,7 @@ def signup(request):
                             status=status.HTTP_400_BAD_REQUEST)
         user = User.objects.create(email=email, username=username)
     confirmation_code = default_token_generator.make_token(user)
-    mail_subject = 'confirmation code'
+    mail_subject = 'код подтверждения'
     message = f'Ваш код подтверждения: {confirmation_code}'
     send_mail(mail_subject,
               message,
