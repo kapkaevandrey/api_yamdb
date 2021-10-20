@@ -24,7 +24,7 @@ msgstr ""
 #, fuzzy
 #| msgid "username"
 msgid "user"
-msgstr "Имя пользователя"
+msgstr "Пользователь"
 
 #: .\reviews\models.py:19
 msgid "admin"
@@ -113,7 +113,7 @@ msgstr "жанр"
 
 #: .\reviews\models.py:129
 msgid "Нельзя создать произведение с датой больше {datetime.now().year}"
-msgstr ""
+msgstr "Нельзя создать произведение с датой больше {datetime.now().year}"
 
 #: .\reviews\models.py:135
 msgid "Title"
@@ -157,7 +157,7 @@ msgstr "автор"
 #, fuzzy
 #| msgid "review"
 msgid "unique review"
-msgstr "отзыв"
+msgstr "уникальный отзыв"
 
 #: .\reviews\models.py:199
 msgid "Review"
