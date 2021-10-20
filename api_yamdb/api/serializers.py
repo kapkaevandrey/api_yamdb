@@ -39,7 +39,7 @@ class UserJwtTokenSerializer(serializers.Serializer):
     username = serializers.CharField(required=True, validators=[
         RegexValidator(
             regex=r'^[\w.@+-]+\Z',
-            message='Пользователя с таким именем создать невозможно',
+            message='Пользователя с таким именем не существует',
         ),
     ])
     confirmation_code = serializers.CharField(required=True)
