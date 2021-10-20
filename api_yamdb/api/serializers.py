@@ -1,12 +1,8 @@
 from django.conf import settings
-from django.contrib.auth import get_user_model
 from django.core.validators import RegexValidator
 from rest_framework import serializers
 
-from reviews.models import Category, Genre, Title, Comment, Review
-
-
-User = get_user_model()
+from reviews.models import Category, Genre, Title, Comment, Review, User
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -40,7 +36,12 @@ class UserSignupSerializer(serializers.Serializer):
 
 
 class UserJwtTokenSerializer(serializers.Serializer):
-    username = serializers.CharField(required=True)
+    username = serializers.CharField(required=True, validators=[
+        RegexValidator(
+            regex=r'^[\w.@+-]+\Z',
+            message='Пользователя с таким именем не существует',
+        ),
+    ])
     confirmation_code = serializers.CharField(required=True)
 
 
@@ -87,9 +88,7 @@ class TitleGetSerializer(serializers.ModelSerializer):
     class Meta:
         fields = ('__all__')
         model = Title
-        read_only_fields = (
-            'name', 'year', 'category',
-            'description', 'genre')
+        read_only_fields = ('__all__',)
 
 
 class ReviewSerializer(serializers.ModelSerializer):
@@ -98,8 +97,9 @@ class ReviewSerializer(serializers.ModelSerializer):
         slug_field="username",
         read_only=True,
         default=serializers.CurrentUserDefault())
-    score = serializers.IntegerField(min_value=settings.RATING_RANGE['MIN'],
-                                     max_value=settings.RATING_RANGE['MAX'])
+    score = serializers.IntegerField(
+        min_value=settings.RATING_RANGE['MIN'],
+        max_value=settings.RATING_RANGE['MAX'])
 
     class Meta:
         model = Review
@@ -111,18 +111,19 @@ class ReviewSerializer(serializers.ModelSerializer):
         if request.method == "PATCH":
             return attrs
         title_id = request.parser_context['kwargs'].get("title_id")
-        if Review.objects.filter(author=request.user,
-                                 title__id=title_id).exists():
+
+        if Review.objects.filter(
+                author=request.user, title__id=title_id).exists():
             raise serializers.ValidationError(
-                'Вы уже оставили отзыв к этому произведению'
-            )
+                'Вы уже оставили отзыв к этому произведению')
         return attrs
 
 
 class CommentsSerializer(serializers.ModelSerializer):
     """Сериализатор для модели комментариев"""
-    author = serializers.SlugRelatedField(slug_field="username",
-                                          read_only=True)
+    author = serializers.SlugRelatedField(
+        slug_field="username",
+        read_only=True)
 
     class Meta:
         model = Comment
