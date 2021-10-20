@@ -52,7 +52,7 @@ class User(AbstractUser):
     role = models.CharField(
         _('role'),
         max_length=len(reduce(lambda a, b: a[1] if (
-                len(a[1]) > len(b[1])) else b[1], CHOICES)),
+            len(a[1]) > len(b[1])) else b[1], CHOICES)),
         choices=CHOICES,
         default=USER
     )
