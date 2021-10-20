@@ -30,10 +30,7 @@ from .serializers import (
     UserSerializer,
     UserSignupSerializer
 )
-from reviews.models import Category, Genre, Title, Review
-
-
-User = get_user_model()
+from reviews.models import Category, Genre, Title, Review, User
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -62,10 +59,9 @@ class UserViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         role = serializer.validated_data.get('role')
         if role is not None and role != user.role:
-            return Response(
-                {'role': 'user'},
-                status=status.HTTP_200_OK)
-        serializer.save()
+            serializer.save(role=user.role)
+        else:
+            serializer.save()
         return Response(serializer.data)
 
 
@@ -73,14 +69,20 @@ class UserViewSet(viewsets.ModelViewSet):
 def signup(request):
     serializer = UserSignupSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
-    email = serializer.data.get('email')
-    username = serializer.data.get('username')
-    try:
-        user, created = User.objects.get_or_create(
+    email = serializer.validated_data.get('email')
+    username = serializer.validated_data.get('username')
+    if User.objects.filter(email=email, username=username).exists():
+        user = User.objects.get(
             email=email, username=username)
-    except IntegrityError as e:
-        return Response({'error': str(e)},
-                        status=status.HTTP_400_BAD_REQUEST)
+    else:
+        if User.objects.filter(username=username).exists():
+            return Response(f'Пользователь с username = {username}'
+                            ' уже существует',
+                            status=status.HTTP_400_BAD_REQUEST)
+        if User.objects.filter(email=email).exists():
+            return Response(f'Пользователь с email = {email} уже существует',
+                            status=status.HTTP_400_BAD_REQUEST)
+        user = User.objects.create(email=email, username=username)
     confirmation_code = default_token_generator.make_token(user)
     mail_subject = 'confirmation code'
     message = f'Ваш код подтверждения: {confirmation_code}'
