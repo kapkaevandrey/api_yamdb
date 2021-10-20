@@ -8,6 +8,7 @@ from reviews.models import Category, Genre, Title, Comment, Review
 
 User = get_user_model()
 
+
 class UserSerializer(serializers.ModelSerializer):
 
     class Meta:

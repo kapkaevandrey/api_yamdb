@@ -62,10 +62,9 @@ class User(AbstractUser):
     @property
     def is_admin(self):
         return (
-            self.is_superuser or
-            self.is_staff or
-            self.role == User.ADMIN
-                )
+            self.is_superuser
+            or self.is_staff
+            or self.role == User.ADMIN)
 
     @property
     def is_admin_or_moderator(self):
@@ -126,7 +125,8 @@ class Title(models.Model):
     def clean(self):
         if self.year > datetime.now().year:
             raise ValidationError(
-                f'Нельзя создать произведение с датой больше {datetime.now().year}'
+                f'Нельзя создать произведение с датой больше '
+                f'{datetime.now().year}'
             )
 
     class Meta:
