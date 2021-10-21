@@ -86,7 +86,7 @@ class TitleGetSerializer(serializers.ModelSerializer):
     rating = serializers.IntegerField()
 
     class Meta:
-        fields = ('__all__')
+        fields = '__all__'
         model = Title
         read_only_fields = ('__all__',)
 
