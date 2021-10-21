@@ -63,7 +63,7 @@ class UserViewSet(viewsets.ModelViewSet):
 def signup(request):
     serializer = UserSignupSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
-    email = serializer.validated_data.get('email').lower
+    email = serializer.validated_data.get('email').lower()
     username = serializer.validated_data.get('username')
     if User.objects.filter(email=email, username=username).exists():
         user = User.objects.get(
