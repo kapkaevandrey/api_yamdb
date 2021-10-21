@@ -6,7 +6,6 @@ from reviews.models import Category, Genre, Title, Comment, Review, User
 
 
 class UserSerializer(serializers.ModelSerializer):
-
     class Meta:
         fields = (
             'first_name',
@@ -20,7 +19,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class UserSignupSerializer(serializers.Serializer):
-    email = serializers.EmailField(required=True,)
+    email = serializers.EmailField(required=True, )
     username = serializers.CharField(required=True, validators=[
         RegexValidator(
             regex=r'^[\w.@+-]+\Z',
@@ -113,7 +112,8 @@ class ReviewSerializer(serializers.ModelSerializer):
         title_id = request.parser_context['kwargs'].get("title_id")
 
         if Review.objects.filter(
-                author=request.user, title__id=title_id).exists():
+                author=request.user,
+                title__id=title_id).exists():
             raise serializers.ValidationError(
                 'Вы уже оставили отзыв к этому произведению')
         return attrs
