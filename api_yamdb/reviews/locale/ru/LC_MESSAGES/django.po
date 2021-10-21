@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-10-20 22:36+0300\n"
+"POT-Creation-Date: 2021-10-21 10:56+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -107,13 +107,14 @@ msgstr "категория"
 msgid "description"
 msgstr "описание"
 
-#: .\reviews\models.py:123 .\reviews\models.py:153
+#: .\reviews\models.py:123 .\reviews\models.py:155
 msgid "genre"
 msgstr "жанр"
 
 #: .\reviews\models.py:129
-msgid "Нельзя создать произведение с датой больше {datetime.now().year}"
-msgstr "Нельзя создать произведение с датой больше {datetime.now().year}"
+#, python-brace-format
+msgid "You cannot create a work with a date greater than {date}"
+msgstr "Нельзя создать произведение с датой больше {date}"
 
 #: .\reviews\models.py:135
 msgid "Title"
@@ -128,20 +129,20 @@ msgstr "Произведения"
 msgid "id - {id}, name - {name}"
 msgstr "id - {id}, имя - {name}"
 
-#: .\reviews\models.py:148 .\reviews\models.py:184
+#: .\reviews\models.py:150 .\reviews\models.py:184
 msgid "title"
 msgstr "произведение"
 
-#: .\reviews\models.py:158
+#: .\reviews\models.py:159
 #, python-brace-format
 msgid "title_id - {title_id} {title_name} genre_id - {genre_id} {slug}"
 msgstr "title_id - {title_id} {title_name} genre_id - {genre_id} {slug}"
 
-#: .\reviews\models.py:169 .\reviews\models.py:215
+#: .\reviews\models.py:169 .\reviews\models.py:213
 msgid "text"
 msgstr "текст"
 
-#: .\reviews\models.py:171 .\reviews\models.py:217
+#: .\reviews\models.py:171 .\reviews\models.py:215
 msgid "date of publication"
 msgstr "дата публикации"
 
@@ -149,7 +150,7 @@ msgstr "дата публикации"
 msgid "score"
 msgstr "рейтинг"
 
-#: .\reviews\models.py:190 .\reviews\models.py:224
+#: .\reviews\models.py:190 .\reviews\models.py:222
 msgid "author"
 msgstr "автор"
 
@@ -172,20 +173,24 @@ msgstr "Отзывы"
 msgid "Author - {author}; title_id-{title} review_id-{id} text part - {text}."
 msgstr "Автор - {author}; title_id-{title} review_id-{id} текст - {text}."
 
-#: .\reviews\models.py:230
+#: .\reviews\models.py:228
 msgid "review"
 msgstr "отзыв"
 
-#: .\reviews\models.py:235
+#: .\reviews\models.py:233
 msgid "Comment"
 msgstr "Комментарий"
 
-#: .\reviews\models.py:236
+#: .\reviews\models.py:234
 msgid "Comments"
 msgstr "Комментарии"
 
-#: .\reviews\models.py:239
+#: .\reviews\models.py:237
 #, python-brace-format
 msgid ""
 "Author - {author}; review_id-{review_id} comment_id-{id} text part - {text}."
-msgstr "Автор - {author}; review_id-{review_id} comment_id-{id} текст - {text}."
+msgstr ""
+"Автор - {author}; review_id-{review_id} comment_id-{id} текст - {text}."
+
+#~ msgid "Нельзя создать произведение с датой больше {datetime.now().year}"
+#~ msgstr "Нельзя создать произведение с датой больше {date}"

@@ -63,9 +63,9 @@ class User(AbstractUser):
     @property
     def is_admin(self):
         return (
-            self.is_superuser
-            or self.is_staff
-            or self.role == User.ADMIN)
+                self.is_superuser
+                or self.is_staff
+                or self.role == User.ADMIN)
 
     @property
     def is_admin_or_moderator(self):
@@ -126,8 +126,8 @@ class Title(models.Model):
     def clean(self):
         if self.year > datetime.now().year:
             raise ValidationError(
-                _('Нельзя создать произведение с датой больше '
-                  '{datetime.now().year}').format(date=datetime.now().year)
+                _('You cannot create a work with a date greater than '
+                  '{date}').format(date=datetime.now().year)
             )
 
     class Meta:
@@ -136,8 +136,10 @@ class Title(models.Model):
         verbose_name_plural = _('Titles')
 
     def __str__(self):
-        return (_('id - {id}, name - {name}').
-                format(id=self.id, name=self.name[:15]))
+        return _('id - {id}, '
+                 'name - {name}').format(
+            id=self.id,
+            name=self.name[:15])
 
 
 class GenreTitle(models.Model):
@@ -154,14 +156,12 @@ class GenreTitle(models.Model):
     )
 
     def __str__(self):
-        return (
-            _('title_id - {title_id} {title_name} '
-              'genre_id - {genre_id} {slug}').
-            format(
-                title_id=self.title.id,
-                title_name=self.title.name[:15],
-                genre_id=self.genre.id,
-                slug=self.genre.slug))
+        return _('title_id - {title_id} {title_name} '
+                 'genre_id - {genre_id} {slug}').format(
+            title_id=self.title.id,
+            title_name=self.title.name[:15],
+            genre_id=self.genre.id,
+            slug=self.genre.slug)
 
 
 class Review(models.Model):
@@ -200,14 +200,12 @@ class Review(models.Model):
         verbose_name_plural = _('Reviews')
 
     def __str__(self):
-        return (_('Author - {author}; title_id-{title} '
-                  'review_id-{id} text part - {text}.').
-                format(
+        return _('Author - {author}; title_id-{title} '
+                 'review_id-{id} text part - {text}.').format(
             author=self.author,
             id=self.id,
             title=self.title.id,
             text=self.text[:15])
-        )
 
 
 class Comment(models.Model):
@@ -236,11 +234,9 @@ class Comment(models.Model):
         verbose_name_plural = _('Comments')
 
     def __str__(self):
-        return (_('Author - {author}; review_id-{review_id} '
-                  'comment_id-{id} text part - {text}.').
-                format(
+        return _('Author - {author}; review_id-{review_id} '
+                 'comment_id-{id} text part - {text}.').format(
             author=self.author,
             id=self.id,
             review_id=self.review.id,
             text=self.text[:15])
-        )
