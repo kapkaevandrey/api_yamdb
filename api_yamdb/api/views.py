@@ -55,11 +55,7 @@ class UserViewSet(viewsets.ModelViewSet):
             partial=True
         )
         serializer.is_valid(raise_exception=True)
-        role = serializer.validated_data.get('role')
-        if role is not None and role != user.role:
-            serializer.save(role=user.role)
-        else:
-            serializer.save()
+        serializer.save(role=user.role)
         return Response(serializer.data)
 
 
@@ -67,7 +63,7 @@ class UserViewSet(viewsets.ModelViewSet):
 def signup(request):
     serializer = UserSignupSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
-    email = serializer.validated_data.get('email')
+    email = serializer.validated_data.get('email').lower
     username = serializer.validated_data.get('username')
     if User.objects.filter(email=email, username=username).exists():
         user = User.objects.get(
